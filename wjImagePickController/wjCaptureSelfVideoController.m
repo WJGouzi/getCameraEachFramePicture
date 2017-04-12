@@ -72,10 +72,6 @@
 }
 
 
-
-
-
-
 - (BOOL)shouldAutorotate {
     return NO;
 }

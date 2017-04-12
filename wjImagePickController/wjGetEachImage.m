@@ -35,9 +35,7 @@
 }
 
 
-/**
- session的设置
- */
+/** session的设置*/
 - (void)playerSessionSettings {
     _session = [[AVCaptureSession alloc] init];
     _session.sessionPreset = AVCaptureSessionPresetPhoto;
@@ -70,9 +68,7 @@
 }
 
 
-/**
- 界面的设置
- */
+/** 界面的设置*/
 - (void)UISettings {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     [button setTitle:@"开启" forState:UIControlStateNormal];
@@ -119,9 +115,7 @@
 
 
 #pragma mark - delegate
-/**
- 拿到图片
- */
+/** 拿到图片*/
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
@@ -129,12 +123,14 @@
     CGRect rect = CGRectMake(0, 0, CVPixelBufferGetWidth(pixelBuffer), CVPixelBufferGetHeight(pixelBuffer));
     CIContext *context = [CIContext contextWithOptions:nil];
     CGImageRef imageRef = [context createCGImage:ciImage fromRect:rect];
-    UIImage *image = [UIImage imageWithCGImage:imageRef];
+    UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0f orientation:UIImageOrientationRight];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        //    image = [image rotateInDegrees:90.0f];
+  //    image = [image rotateInDegrees:90.0f];
+        // 添加之前就移除之前的图片，避免了内存的消耗
+        [_imageArr removeAllObjects];
         // 添加到数组中是个耗内存的操作
-    [_imageArr addObject:image];
+        [_imageArr addObject:image];
     });
     CGImageRelease(imageRef);
 }
